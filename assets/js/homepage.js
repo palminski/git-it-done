@@ -47,10 +47,12 @@ const displayRepos = function(repos, searchTerm) {
     for (let i = 0;i<repos.length; i++) {
         //Format repos name
         let repoName = repos[i].owner.login + " / " + repos[i].name;
+        let querryParameterRepoName = repos[i].owner.login + "/" + repos[i].name;
 
         //container for each repo
-        let $repo = document.createElement("div");
+        let $repo = document.createElement("a");
         $repo.classList = "list-item flex-row justify-space-between align-center";
+        $repo.setAttribute("href", "./single-repo.html?repo=" + querryParameterRepoName);
 
         //create a span to hold repo name
         let $title = document.createElement("span");
