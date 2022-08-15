@@ -1,4 +1,5 @@
 const $issueContainer = document.querySelector("#issues-container");
+const $warningContainer = document.querySelector("#limit-warning");
 
 let getRepoIssues = function (repo) {
     let apiUrl = "https://api.github.com/repos/"+repo+"/issues?direction=asc";
@@ -6,6 +7,12 @@ let getRepoIssues = function (repo) {
         if (response.ok) {
             response.json().then(function(data){
                 displayIssues(data);
+
+                // Check if API has paginated issues
+                if (response.headers.get("Link")) {
+                    console.log ("repo has more than 30 issues");
+                    displayWarning(repo);
+                }
             });
         } 
         else
@@ -20,7 +27,6 @@ let displayIssues = function(issues) {
         $issueContainer.textContent = "This repo has no open issues!";
         return;
     }
-    console.log(issues);
     for (let i = 0; i <issues.length; i++) {
         let $issue = document.createElement("a");
         $issue.classList = "list-item flex-row justify-space-between align-center";
@@ -40,10 +46,19 @@ let displayIssues = function(issues) {
             $type.textContent = "(Issue)";
         }
         $issue.appendChild($type);
-        console.log($issue);
-        console.log($issueContainer);
+
         $issueContainer.appendChild($issue);
     }
 };
 
-getRepoIssues("palminski/git-it-done");
+let displayWarning = function(repo) {
+    $warningContainer.textContent = "to see more than 30 issues, visit ";
+    let $link = document.createElement("a");
+    $link.textContent = "this page on GitHub.com";
+    $link.setAttribute("href", "https://github.com/" + repo + "/issues");
+    $link.setAttribute("target", "_blank");
+
+    $warningContainer.appendChild($link);
+}
+
+getRepoIssues("facebook/react");
